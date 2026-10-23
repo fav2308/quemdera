@@ -58,12 +58,29 @@ thead th{border-top:0;color:var(--muted);font-weight:600;font-size:13px}
 .ovbox{display:flex;flex-direction:column;gap:12px;align-items:center;max-height:100%;max-width:100%}
 .ovbox img{max-width:100%;max-height:70vh;object-fit:contain;border-radius:6px}
 .ovbox p{color:#EFE7DA;text-align:center;font-size:15px;margin:0;max-width:40ch}
+
+.tour-ov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:90;display:none}
+.tour-spot{position:fixed;z-index:91;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.62);outline:2px solid #FC8805;pointer-events:none;display:none;transition:left .25s ease,top .25s ease,width .25s ease,height .25s ease}
+.tour-tip{position:fixed;z-index:92;width:min(360px,calc(100vw - 24px));background:#07080B;color:#EFE7DA;border:1px solid rgba(252,136,5,.55);border-radius:14px;padding:18px 18px 14px;box-shadow:0 10px 40px rgba(0,0,0,.5);display:none;font:400 15px/1.5 Inter,system-ui,sans-serif}
+.tour-tip.on{display:block}
+.tour-tip.sheet{left:12px!important;right:12px;width:auto;top:auto!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+.tour-tip h4{margin:2px 0 8px;font:400 27px/1 "Bebas Neue",Impact,sans-serif;letter-spacing:.02em;color:#fff}
+.tour-count{font-size:12.5px;color:#FFC46B;font-weight:600}
+.tour-body p{margin:0 0 8px;max-width:none}
+.tour-body ol{margin:0 0 8px;padding-left:1.25em}
+.tour-body li{margin-bottom:4px}
+.tour-nav{display:flex;gap:8px;align-items:center;margin-top:12px}
+.tour-nav span{flex:1}
+.tour-nav button{font:600 14px/1 Inter,sans-serif;border-radius:8px;padding:11px 14px;cursor:pointer;border:1px solid rgba(239,231,218,.3);background:transparent;color:#EFE7DA}
+.tour-nav .tour-next{background:#FC8805;border-color:#FC8805;color:#07080B}
+.tour-nav .tour-skip{border:0;padding-left:0;color:rgba(239,231,218,.7)}
 </style>
 </head>
 <body>
 <header><div class="wrap">
   <h1>Templates</h1>
   <p class="muted" style="margin-top:12px;font-size:18px;max-width:64ch">Sete modelos nas dimensões exatas de cada rede, no sistema Janela Acesa. Edite os campos, troque a foto e baixe o arquivo pronto. As zonas seguras aparecem tracejadas e não saem no arquivo.</p>
+  <button type="button" id="tourBtn">Como usar</button>
 </div></header>
 
 <div class="wrap">
@@ -236,7 +253,7 @@ function buildPanel(){
   const p=$('#panel');p.innerHTML=`<h3>${cur.name}</h3><p>${cur.W} × ${cur.H} px. As alterações aparecem na hora.</p>`;
   const f=st[cur.id];
   cur.fields.forEach(fd=>{
-    const l=document.createElement('label');l.className='f';l.textContent=fd.l;let el;
+    const l=document.createElement('label');l.className='f';l.textContent=fd.l;if(fd.type==='foto')l.dataset.tour='foto';let el;
     if(fd.type==='faixa'){el=document.createElement('select');FAIXAS.forEach(o=>el.add(new Option(o,o)));}
     else if(fd.type==='select'){el=document.createElement('select');if(fd.k==='lit')el.add(new Option('Automático pela faixa','auto'));fd.opts.forEach(o=>el.add(new Option(o,o)));}
     else if(fd.type==='foto'){el=document.createElement('select');el.add(new Option('Ensaio atual: sentados','sentados'));el.add(new Option('Ensaio atual: em pé','empe'));el.add(new Option('Foto enviada','upload'));}
@@ -245,13 +262,13 @@ function buildPanel(){
     el.value=f[fd.k];el.oninput=el.onchange=()=>{f[fd.k]=el.value;paint();};l.appendChild(el);p.appendChild(l);
   });
   if(cur.fields.some(fd=>fd.type==='foto')){
-    const l=document.createElement('label');l.className='f';l.innerHTML='Enviar foto (PNG recortado de preferência)';const i=document.createElement('input');i.type='file';i.accept='image/png,image/jpeg,image/webp';
+    const l=document.createElement('label');l.className='f';l.innerHTML='Enviar foto (PNG recortado de preferência)';l.dataset.tour='upload';const i=document.createElement('input');i.type='file';i.accept='image/png,image/jpeg,image/webp';
     i.onchange=async e=>{const fl=e.target.files[0];if(!fl)return;uploaded=await load(URL.createObjectURL(fl));uploadedAlpha=hasAlpha(uploaded);const k=cur.fields.find(x=>x.type==='foto').k;st[cur.id][k]='upload';buildPanel();paint();$('#status').textContent=uploadedAlpha?'Foto recortada aplicada.':'Foto sem transparência: ela preenche o quadro. Confira os rostos.';};
     l.appendChild(i);p.appendChild(l);
   }
-  const z=document.createElement('label');z.className='chk';z.innerHTML=`<input type="checkbox" ${showZones?'checked':''}> Mostrar zonas seguras`;z.querySelector('input').onchange=e=>{showZones=e.target.checked;paint();};p.appendChild(z);
-  const r=document.createElement('div');r.className='row';
-  const b1=document.createElement('button');b1.type='button';b1.className='primary';b1.textContent=cur.id==='thumb'?'Baixar JPG':'Baixar PNG';b1.onclick=()=>exportOne(cur,f);r.appendChild(b1);const bv=document.createElement('button');bv.type='button';bv.textContent='Abrir imagem (celular)';bv.onclick=()=>openView(cur,f);r.appendChild(bv);
+  const z=document.createElement('label');z.className='chk';z.dataset.tour='zonas';z.innerHTML=`<input type="checkbox" ${showZones?'checked':''}> Mostrar zonas seguras`;z.querySelector('input').onchange=e=>{showZones=e.target.checked;paint();};p.appendChild(z);
+  const r=document.createElement('div');r.className='row';r.dataset.tour='baixar';
+  const b1=document.createElement('button');b1.type='button';b1.className='primary';b1.textContent=cur.id==='thumb'?'Baixar JPG':'Baixar PNG';b1.onclick=()=>exportOne(cur,f);r.appendChild(b1);const bv=document.createElement('button');bv.type='button';bv.textContent='Abrir imagem (celular)';bv.dataset.tour='celular';bv.onclick=()=>openView(cur,f);r.appendChild(bv);
   if(cur.fields.some(fd=>fd.type==='faixa')){const b2=document.createElement('button');b2.type='button';b2.textContent='As 4 faixas (ZIP)';b2.disabled=!window.JSZip;b2.onclick=()=>exportFour(cur,f);r.appendChild(b2);}
   p.appendChild(r);const s=document.createElement('div');s.className='status';s.id='status';p.appendChild(s);
 }
@@ -264,15 +281,56 @@ async function exportOne(t,f){const b=await blobOf(t,f);await save(`${t.id}_${sl
 async function exportFour(t,f){const z=new JSZip();for(const fx of FAIXAS){const ff={...f,faixa:fx,lit:'auto'};const b=await blobOf(t,ff);z.file(`${t.id}_${slug(fx)}_${t.W}x${t.H}.${t.id==='thumb'?'jpg':'png'}`,b);}
   await save(`${t.id}_4-faixas.zip`,await z.generateAsync({type:'blob'}));}
 
+
+const DEV=(()=>{const ua=navigator.userAgent||'';const ios=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const android=/Android/i.test(ua);return{ios,android,phone:ios||android||matchMedia('(pointer:coarse)').matches};})();
+const SAVE_PHONE=DEV.ios?'<ol><li>Toque em “Abrir imagem”.</li><li>Toque e segure a imagem.</li><li>Escolha “Adicionar às Fotos”.</li><li>Toque em “Fechar” para voltar.</li></ol><p>A imagem fica na galeria, pronta para usar.</p>'
+ :DEV.android?'<ol><li>Toque em “Abrir imagem”.</li><li>Toque e segure a imagem.</li><li>Escolha “Baixar imagem” ou “Salvar imagem”.</li><li>Toque em “Fechar” para voltar.</li></ol><p>A imagem vai para a galeria, na pasta Download.</p>'
+ :'<ol><li>Toque em “Abrir imagem”.</li><li>Toque e segure a imagem.</li><li>No iPhone, escolha “Adicionar às Fotos”; no Android, “Baixar imagem”.</li></ol>';
+const Tour=(()=>{let steps=[],i=0,key='',ov,spot,tip;
+ const narrow=()=>matchMedia('(max-width:700px)').matches;
+ function el(sel){if(!sel)return null;const e=typeof sel==='function'?sel():document.querySelector(sel);return e&&e.getClientRects().length?e:null;}
+ function build(){if(tip)return;ov=document.createElement('div');ov.className='tour-ov';spot=document.createElement('div');spot.className='tour-spot';tip=document.createElement('div');tip.className='tour-tip';tip.setAttribute('role','dialog');tip.setAttribute('aria-modal','false');tip.setAttribute('aria-label','Tour guiado');document.body.append(ov,spot,tip);
+  window.addEventListener('resize',place);window.addEventListener('scroll',place,{passive:true});
+  document.addEventListener('keydown',e=>{if(!tip.classList.contains('on'))return;if(e.key==='Escape')end();if(e.key==='ArrowRight')go(i+1);if(e.key==='ArrowLeft')go(i-1);});}
+ function place(){if(!tip||!tip.classList.contains('on'))return;const t=el(steps[i].el);
+  if(t){const r=t.getBoundingClientRect(),p=8;Object.assign(spot.style,{display:'block',left:r.left-p+'px',top:r.top-p+'px',width:r.width+2*p+'px',height:r.height+2*p+'px'});ov.style.display='none';}
+  else{spot.style.display='none';ov.style.display='block';}
+  const sheet=narrow();tip.classList.toggle('sheet',sheet);if(sheet)return;
+  const tw=tip.offsetWidth,th=tip.offsetHeight,vw=innerWidth,vh=innerHeight;
+  if(!t){tip.style.left=(vw-tw)/2+'px';tip.style.top=(vh-th)/2+'px';return;}
+  const r=t.getBoundingClientRect();let top=r.bottom+18;if(top+th>vh-12)top=r.top-th-18;if(top<12)top=Math.max(12,Math.min(vh-th-12,r.top+12));
+  let left=r.left+r.width/2-tw/2;left=Math.max(12,Math.min(vw-tw-12,left));tip.style.left=left+'px';tip.style.top=top+'px';}
+ function go(n){if(n<0)return;if(n>=steps.length)return end();i=n;const s=steps[i];if(s.before)s.before();const last=i===steps.length-1;
+  tip.innerHTML=`<div class="tour-count">${i+1} de ${steps.length}</div><h4>${s.title}</h4><div class="tour-body">${s.body}</div><div class="tour-nav"><button type="button" class="tour-skip"${last?' hidden':''}>Pular</button><span></span><button type="button" class="tour-prev"${i===0?' hidden':''}>Voltar</button><button type="button" class="tour-next">${last?'Começar':'Próximo'}</button></div>`;
+  tip.querySelector('.tour-next').onclick=()=>go(i+1);tip.querySelector('.tour-prev').onclick=()=>go(i-1);tip.querySelector('.tour-skip').onclick=end;
+  tip.classList.add('on');const t=el(s.el);
+  if(t){const r=t.getBoundingClientRect();const off=narrow()?16:Math.max(16,(innerHeight-r.height)/2-60);scrollTo({top:scrollY+r.top-off,behavior:'smooth'});setTimeout(place,420);setTimeout(place,800);}
+  place();tip.querySelector('.tour-next').focus({preventScroll:true});}
+ function end(){if(!tip)return;tip.classList.remove('on');spot.style.display='none';ov.style.display='none';try{localStorage.setItem(key,'1');}catch(e){}}
+ return{start(st,k){steps=st;key=k;build();go(0);},auto(st,k){let seen=null;try{seen=localStorage.getItem(k);}catch(e){}if(!seen)this.start(st,k);}};})();
+function openBlob(blob){const o=document.getElementById('ov');const im=o.querySelector('img');if(im.src.startsWith('blob:'))URL.revokeObjectURL(im.src);im.src=URL.createObjectURL(blob);o.hidden=false;}
+
+function tplSteps(){const s=[
+{title:'Bem-vindo aos templates',body:'<p>Em um minuto você aprende a montar um post no padrão da Na Sala do QuemDera e a salvar no celular ou no computador.</p>'},
+{el:'#tabs',title:'Escolha o formato',before:()=>{const b=document.querySelector('#tabs button');if(b&&b.getAttribute('aria-pressed')!=='true')b.click();},body:'<p>Cada botão é um tipo de peça: capa de Reels, post, story, thumbnail do YouTube, pré-estreia, contagem regressiva e card de faixa. O tamanho certo de cada rede já vem pronto.</p>'},
+{el:'.preview',title:'Confira a prévia',body:'<p>É assim que o arquivo vai sair. As linhas tracejadas mostram onde o Instagram e o YouTube cobrem a imagem: deixe o importante dentro delas. Elas não aparecem no arquivo final.</p>'},
+{el:'#panel label.f',title:'Troque os textos',body:'<p>Escreva direto nos campos e a prévia muda na hora. Ao escolher a faixa, a janela acende sozinha na quantidade certa.</p>'},
+{el:'[data-tour=foto]',title:'Escolha a foto',body:'<p>Use uma das fotos do ensaio ou envie outra no campo logo abaixo. A melhor é com fundo recortado (PNG): ela ganha a luz âmbar em volta. Confira se os rostos estão nítidos.</p>'},
+{el:'[data-tour=zonas]',title:'Veja a peça limpa',body:'<p>Desmarque “Mostrar zonas seguras” para ver a peça exatamente como ela vai ficar.</p>'}];
+if(DEV.phone)s.push({el:'[data-tour=celular]',title:'Salvar no celular',body:SAVE_PHONE});
+else s.push({el:'[data-tour=baixar]',title:'Baixar no computador',body:'<p>“Baixar PNG” salva o arquivo na pasta Downloads, no tamanho exato. “As 4 faixas” gera um ZIP com a mesma peça das quatro músicas de uma vez.</p><p>No celular, use “Abrir imagem (celular)” e toque e segure a imagem para salvar.</p>'});
+s.push({title:'Antes de postar',body:'<ol><li>Deixe a internet ligada: as fontes da marca vêm de lá.</li><li>Mande a peça no grupo para aprovação antes de publicar.</li><li>Para ver este tour de novo, toque em “Como usar”, no topo da página.</li></ol>'});return s;}
 async function openView(t,f){const b=await blobOf(t,f);const o=$('#ov');const im=o.querySelector('img');if(im.src.startsWith('blob:'))URL.revokeObjectURL(im.src);im.src=URL.createObjectURL(b);o.hidden=false;}
 async function init(){
   buildTabs();buildPanel();
   [img.sub,img.mae,img.casa,img.sentados,img.empe]=await Promise.all([load(svgUrl(SUB_SVG)),load(svgUrl(MAE_SVG)),load(svgUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${CASA_VB}"><path fill="${AMBAR}" fill-rule="evenodd" d="${CASA_D}"/></svg>`)),load(PHOTOS.sentados),load(PHOTOS.empe)]);
   try{await Promise.all([document.fonts.load(bebas(100)),document.fonts.load(inter(40)),document.fonts.load(fra(60))]);}catch(e){}
   paint();
+  setTimeout(()=>Tour.auto(tplSteps(),'qd-tour-templates-v1'),500);
   if(window.claude&&window.claude.use){try{downloads=await window.claude.use('downloads');}catch(e){}}
 }
 init();
+document.getElementById('tourBtn').onclick=()=>Tour.start(tplSteps(),'qd-tour-templates-v1');
 </script>
 </body>
 </html>

@@ -65,6 +65,27 @@ li{margin-bottom:8px;max-width:72ch}
 .tray canvas{width:96px;height:96px;background:#E7DED6;border-radius:12px}
 body.chat-dark .tray canvas{background:#0B141A}
 footer{padding:30px 0 60px;color:var(--muted);font-size:14px}
+
+.tour-ov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:90;display:none}
+.tour-spot{position:fixed;z-index:91;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.62);outline:2px solid #FC8805;pointer-events:none;display:none;transition:left .25s ease,top .25s ease,width .25s ease,height .25s ease}
+.tour-tip{position:fixed;z-index:92;width:min(360px,calc(100vw - 24px));background:#07080B;color:#EFE7DA;border:1px solid rgba(252,136,5,.55);border-radius:14px;padding:18px 18px 14px;box-shadow:0 10px 40px rgba(0,0,0,.5);display:none;font:400 15px/1.5 Inter,system-ui,sans-serif}
+.tour-tip.on{display:block}
+.tour-tip.sheet{left:12px!important;right:12px;width:auto;top:auto!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+.tour-tip h4{margin:2px 0 8px;font:400 27px/1 "Bebas Neue",Impact,sans-serif;letter-spacing:.02em;color:#fff}
+.tour-count{font-size:12.5px;color:#FFC46B;font-weight:600}
+.tour-body p{margin:0 0 8px;max-width:none}
+.tour-body ol{margin:0 0 8px;padding-left:1.25em}
+.tour-body li{margin-bottom:4px}
+.tour-nav{display:flex;gap:8px;align-items:center;margin-top:12px}
+.tour-nav span{flex:1}
+.tour-nav button{font:600 14px/1 Inter,sans-serif;border-radius:8px;padding:11px 14px;cursor:pointer;border:1px solid rgba(239,231,218,.3);background:transparent;color:#EFE7DA}
+.tour-nav .tour-next{background:#FC8805;border-color:#FC8805;color:#07080B}
+.tour-nav .tour-skip{border:0;padding-left:0;color:rgba(239,231,218,.7)}
+#ov{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px)}
+#ov[hidden]{display:none}
+.ovbox{display:flex;flex-direction:column;gap:12px;align-items:center;max-height:100%;max-width:100%}
+.ovbox img{max-width:100%;max-height:70vh;object-fit:contain;border-radius:6px}
+.ovbox p{color:#EFE7DA;text-align:center;font-size:15px;margin:0;max-width:40ch}
 </style>
 </head>
 <body>
@@ -74,6 +95,7 @@ footer{padding:30px 0 60px;color:var(--muted);font-size:14px}
   <div class="bar">
     <span class="seg" role="group" aria-label="Fundo do chat"><button type="button" id="bgLight" aria-pressed="true">Chat claro</button><button type="button" id="bgDark" aria-pressed="false">Chat escuro</button></span>
     <button type="button" class="primary" id="zipAll" disabled>Baixar pacote pronto (ZIP)</button>
+    <button type="button" id="tourBtn">Como usar</button>
     <span class="status" id="status">Carregando fontes…</span>
   </div>
 </div></header>
@@ -137,6 +159,7 @@ footer{padding:30px 0 60px;color:var(--muted);font-size:14px}
 
 <footer><div class="wrap">Na Sala do QuemDera · pacote de figurinhas v1. As imagens enviadas nos cards ficam só no seu navegador e não são salvas na página.</div></footer>
 
+<div id="ov" hidden role="dialog" aria-label="Imagem pronta"><div class="ovbox"><p>No celular, toque e segure a imagem e escolha “Salvar imagem” ou “Adicionar às Fotos”.</p><img alt="Imagem pronta para salvar"><button type="button" onclick="document.getElementById('ov').hidden=true">Fechar</button></div></div>
 <script>
 const NOITE='#07080B', AMBAR='#FC8805', BRILHO='#FFC46B', APAG='#2A1B0D', MADEIRA='#5A3420', LINHO='#EFE7DA', FUMACA='#3B3835';
 const CASA_VB='357 98 607 207', CASA_D='M448.0 276.0L447.3 276.3L446.7 275.0L445.7 275.7L446.0 277.3L442.3 279.7L441.3 279.7L440.7 279.0L438.7 280.3L439.7 281.3L437.7 282.7L436.7 282.7L435.3 284.0L434.3 284.3L434.0 283.7L433.3 283.7L432.7 284.3L432.7 286.0L435.0 285.0L444.0 279.0L444.7 279.0ZM680.3 245.3L679.7 246.3L679.7 274.3L680.3 276.0L681.3 277.0L683.7 277.3L711.0 276.7L711.7 275.3L711.7 245.7L710.3 244.7L682.3 244.7ZM639.0 245.0L639.0 245.7L638.0 246.3L637.7 248.0L638.0 276.3L640.0 277.0L666.3 277.3L669.3 276.7L670.0 275.3L669.7 245.3L664.3 244.3L648.0 244.3ZM679.7 204.3L679.7 233.7L680.3 234.7L696.0 235.3L710.3 235.0L711.3 234.3L711.3 203.3L706.7 203.0L705.7 203.7L688.0 203.7L687.3 203.0L681.7 203.0L681.0 204.3ZM670.0 204.3L667.3 203.0L663.7 203.0L662.0 203.7L659.7 203.7L658.3 203.0L649.7 203.7L637.7 203.7L638.0 234.3L640.7 235.0L669.3 234.7L670.0 231.3ZM958.0 268.0L952.7 265.3L947.3 261.7L944.0 260.3L934.0 254.0L932.7 253.7L931.7 252.3L929.7 251.7L927.0 249.7L924.7 248.7L914.0 241.7L909.3 239.3L906.0 236.7L899.3 232.7L896.7 231.7L884.3 223.7L875.0 219.0L872.3 217.0L872.0 215.7L871.0 215.7L870.7 215.0L867.7 213.7L865.7 212.0L860.0 209.3L844.0 199.7L838.0 197.0L830.7 192.0L829.0 191.7L825.0 188.3L824.7 117.3L823.0 115.3L765.7 115.3L762.3 119.0L762.7 148.7L762.0 153.7L761.0 154.3L743.0 143.7L736.7 138.7L733.7 137.3L730.0 134.7L727.3 133.7L719.0 127.7L716.7 126.7L715.0 125.0L709.7 122.3L687.3 107.7L680.3 103.7L676.3 103.7L656.7 115.3L655.0 117.7L654.0 117.3L648.7 120.3L648.0 121.7L645.7 122.0L640.0 125.7L638.7 127.7L637.3 127.3L635.7 128.0L626.7 134.0L620.7 137.0L615.3 141.0L612.3 142.3L612.7 143.0L612.0 143.7L610.7 143.3L605.3 146.3L602.3 149.3L591.0 156.0L588.3 156.0L584.3 157.7L580.3 160.7L579.0 161.0L578.7 161.7L579.0 161.3L579.3 162.3L575.7 164.3L574.3 163.7L569.0 167.3L564.0 169.7L560.3 172.7L560.7 174.3L557.0 177.3L555.7 177.7L555.7 176.0L554.7 176.7L553.3 176.3L548.3 179.7L548.0 181.7L546.7 182.3L544.3 182.0L543.3 183.3L542.3 183.3L538.7 185.3L535.7 187.7L534.3 189.7L533.0 189.3L531.0 190.7L530.7 191.7L529.3 191.7L526.7 193.0L523.7 195.3L517.7 198.7L517.0 199.7L515.0 200.0L512.0 202.3L512.0 203.3L511.0 204.3L509.7 203.7L497.7 210.7L495.3 213.3L493.3 214.3L492.0 216.3L488.7 217.7L487.3 217.7L484.7 219.0L482.7 220.7L480.3 221.7L479.0 223.3L476.0 224.3L471.3 227.7L468.3 228.7L462.0 233.0L460.7 233.3L456.3 236.7L454.0 237.7L451.0 240.0L449.7 240.3L447.3 242.3L444.7 243.3L439.0 247.3L436.0 248.7L434.7 250.0L420.7 258.7L420.3 259.3L418.3 260.0L417.3 261.7L413.7 262.7L408.7 266.3L402.7 269.7L398.3 273.0L396.7 273.7L395.0 275.7L389.7 277.7L381.7 283.3L368.7 291.3L367.0 291.7L366.0 290.7L365.3 291.7L363.7 291.3L363.0 292.7L364.7 293.0L363.7 295.0L364.7 295.0L364.7 296.0L365.3 296.0L376.3 290.3L380.0 290.3L381.0 289.3L387.7 285.7L391.3 282.3L394.3 281.7L395.0 282.3L395.0 283.0L391.3 286.0L387.7 287.7L383.3 290.7L383.3 291.3L382.3 291.7L382.7 293.0L380.3 294.7L381.3 295.7L379.7 296.7L377.7 296.3L377.3 298.3L382.3 296.0L386.0 296.0L389.7 293.7L395.0 291.3L396.7 290.0L399.3 290.0L400.3 289.0L410.7 283.3L411.3 284.0L402.3 290.0L401.7 291.7L400.3 291.7L397.0 293.7L395.7 295.0L396.0 296.3L395.3 297.0L397.7 296.7L398.7 296.0L401.3 296.0L404.0 293.3L406.0 292.3L407.3 292.3L418.7 286.0L419.3 286.0L420.7 287.3L420.0 285.3L423.7 283.0L444.0 272.0L446.3 272.3L450.0 270.0L452.0 269.3L455.7 265.0L459.3 263.7L460.7 262.7L463.7 262.3L466.7 259.7L471.3 257.0L471.7 257.7L471.0 258.3L470.3 258.3L466.0 262.3L458.3 267.7L457.3 269.7L455.3 269.3L453.7 270.3L454.3 271.3L452.7 272.0L452.3 271.3L451.7 271.3L447.7 274.3L449.0 274.0L449.3 275.7L452.0 274.3L452.7 276.0L453.3 276.3L454.3 275.7L453.3 273.7L454.7 272.3L459.3 270.0L460.3 271.0L462.3 270.7L463.7 269.3L466.0 268.7L468.7 266.7L470.0 266.3L470.3 265.3L469.3 264.3L475.0 260.0L481.3 256.3L484.0 257.0L494.3 251.7L496.0 250.3L496.3 248.3L499.3 246.0L500.0 246.0L504.7 242.7L506.0 242.3L509.0 240.0L513.0 238.0L518.0 234.3L521.3 233.0L533.7 224.0L538.0 222.7L539.7 221.0L543.0 219.0L544.0 217.3L547.0 215.0L551.0 214.0L554.7 212.0L558.3 209.3L559.3 208.0L562.3 207.0L564.7 205.0L569.0 203.0L576.3 198.0L585.0 193.3L587.7 191.0L590.3 190.0L592.3 188.0L598.3 185.0L600.7 183.0L601.3 183.0L602.0 182.0L606.3 180.0L612.7 175.7L621.0 171.0L625.7 167.0L628.3 166.0L633.3 163.0L637.0 160.0L642.7 157.7L647.0 154.3L649.3 153.7L657.3 148.0L663.0 145.0L677.0 136.0L679.0 136.3L682.0 138.0L689.7 143.7L691.0 144.0L693.3 146.0L695.7 147.0L704.7 153.0L706.0 153.3L714.7 159.7L718.0 161.3L721.7 164.0L723.0 164.3L736.3 173.0L738.7 174.0L745.3 178.7L750.0 181.0L755.0 185.0L759.7 187.0L793.3 207.7L795.0 208.0L806.7 215.7L811.7 218.0L812.0 218.7L811.0 219.3L811.0 220.3L812.3 221.0L813.0 222.0L817.3 225.0L826.3 230.0L828.7 232.0L829.3 232.0L838.3 237.7L839.7 238.0L841.3 239.7L849.3 244.7L851.7 244.7L852.3 243.3L854.7 243.7L859.3 246.0L863.3 249.0L864.3 249.0L869.3 252.7L872.0 254.0L875.0 254.3L876.0 256.3L875.7 258.0L876.7 259.7L879.7 261.0L885.7 265.0L893.0 266.0L893.3 266.3L892.7 267.3L895.0 269.0L901.0 271.0L907.7 275.7L911.0 277.0L915.0 280.0L920.7 283.0L923.0 282.7L919.3 278.7L920.0 278.3L921.0 279.0L924.0 279.3L923.3 278.3L925.0 278.0L927.7 279.7L934.0 282.0L939.7 285.0L941.0 285.0L944.0 286.7L947.0 286.7L944.0 284.3L933.3 278.7L930.0 276.0L923.7 273.0L922.3 271.7L918.7 269.7L915.3 266.7L913.0 265.7L911.3 264.0L911.7 263.3L915.0 264.7L915.3 265.3L917.0 265.3L919.3 267.0L922.3 267.0L923.0 267.7L924.7 267.7L928.3 270.0L934.3 272.3L935.3 272.3L936.7 271.3L941.3 275.0L943.3 275.0L944.0 274.0L945.7 274.7L946.7 274.7L947.0 274.0L948.3 274.3L946.7 272.7L944.7 272.0L931.0 262.7L930.3 262.7L929.3 261.7L929.3 260.3L928.0 259.0L928.3 258.0L935.3 261.3L945.3 268.0L947.0 268.0L947.0 267.0L945.7 266.3L946.3 265.7L948.0 266.7L952.3 268.0L954.0 268.0L956.0 269.0L958.0 269.0ZM889.7 262.7L890.7 262.3L893.7 264.0L894.7 264.0L895.7 264.7L895.7 265.7L894.0 266.0L892.0 265.0ZM425.7 262.7L421.3 266.0L417.3 268.0L414.7 270.3L412.3 271.3L410.7 273.0L402.0 278.3L399.3 280.7L398.0 281.3L396.3 281.3L395.7 280.7L396.7 279.3L401.0 276.3L407.3 273.0L408.3 272.0L411.7 270.7L415.7 267.7L419.0 266.0L420.7 264.3L424.7 262.0ZM845.0 236.0L846.3 236.0L849.7 238.3L851.0 238.7L851.3 239.7L849.3 239.7L845.3 237.0ZM534.3 192.3L532.3 194.0L531.0 196.0L529.3 196.7L522.7 201.7L521.7 203.7L519.3 203.7L513.7 207.7L511.7 208.3L511.0 209.7L509.7 209.7L505.7 211.3L499.7 215.0L499.0 214.3L502.7 211.7L506.7 209.7L514.7 203.7L517.3 202.7L524.3 198.3L525.0 197.3L529.7 195.0L531.3 193.3L533.7 192.0ZM779.7 132.0L807.7 132.3L808.0 177.0L807.3 180.0L805.0 179.3L799.3 176.0L797.3 175.3L796.3 174.3L794.3 173.7L786.7 168.7L781.7 166.3L779.3 164.3Z';
@@ -286,9 +309,10 @@ function card(st){
   const dl=document.createElement('button');dl.type='button';dl.textContent=(st.kind==='final'?'Baixar WebP':'Baixar WebP');dl.disabled=st.kind!=='final';
   dl.onclick=async()=>{const cv=await compose(st);const b=await toBlob(cv,'image/webp',100*1024);await save(slug(st)+(b.type==='image/webp'?'.webp':'.png'),b);};
   act.appendChild(dl);
+  const bv=document.createElement('button');bv.type='button';bv.textContent='Abrir imagem';bv.disabled=st.kind!=='final';bv.onclick=async()=>{const cv=await compose(st);openBlob(await new Promise(r=>cv.toBlob(r,'image/png')));};act.appendChild(bv);
   if(st.kind!=='final'){
     const lab=document.createElement('label');lab.innerHTML=`Enviar ilustração (PNG)<input type="file" accept="image/png,image/webp">`;
-    lab.querySelector('input').onchange=async ev=>{const f=ev.target.files[0];if(!f)return;const url=URL.createObjectURL(f);const img=await loadImg(url);state[st.n]={img};dl.disabled=false;await paint(st);updateZip();$('#status').textContent='Ilustração aplicada na figurinha '+st.n+'.';};
+    lab.querySelector('input').onchange=async ev=>{const f=ev.target.files[0];if(!f)return;const url=URL.createObjectURL(f);const img=await loadImg(url);state[st.n]={img};dl.disabled=false;bv.disabled=false;await paint(st);updateZip();$('#status').textContent='Ilustração aplicada na figurinha '+st.n+'.';};
     act.appendChild(lab);
   }
   return el;
@@ -307,6 +331,46 @@ async function trayCanvas(){
   const w=74,h=w*vh/vw;x.drawImage(img,48-w/2,50-h/2-4,w,h);return c;
 }
 
+
+const DEV=(()=>{const ua=navigator.userAgent||'';const ios=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const android=/Android/i.test(ua);return{ios,android,phone:ios||android||matchMedia('(pointer:coarse)').matches};})();
+const SAVE_PHONE=DEV.ios?'<ol><li>Toque em “Abrir imagem”.</li><li>Toque e segure a imagem.</li><li>Escolha “Adicionar às Fotos”.</li><li>Toque em “Fechar” para voltar.</li></ol><p>A imagem fica na galeria, pronta para usar.</p>'
+ :DEV.android?'<ol><li>Toque em “Abrir imagem”.</li><li>Toque e segure a imagem.</li><li>Escolha “Baixar imagem” ou “Salvar imagem”.</li><li>Toque em “Fechar” para voltar.</li></ol><p>A imagem vai para a galeria, na pasta Download.</p>'
+ :'<ol><li>Toque em “Abrir imagem”.</li><li>Toque e segure a imagem.</li><li>No iPhone, escolha “Adicionar às Fotos”; no Android, “Baixar imagem”.</li></ol>';
+const Tour=(()=>{let steps=[],i=0,key='',ov,spot,tip;
+ const narrow=()=>matchMedia('(max-width:700px)').matches;
+ function el(sel){if(!sel)return null;const e=typeof sel==='function'?sel():document.querySelector(sel);return e&&e.getClientRects().length?e:null;}
+ function build(){if(tip)return;ov=document.createElement('div');ov.className='tour-ov';spot=document.createElement('div');spot.className='tour-spot';tip=document.createElement('div');tip.className='tour-tip';tip.setAttribute('role','dialog');tip.setAttribute('aria-modal','false');tip.setAttribute('aria-label','Tour guiado');document.body.append(ov,spot,tip);
+  window.addEventListener('resize',place);window.addEventListener('scroll',place,{passive:true});
+  document.addEventListener('keydown',e=>{if(!tip.classList.contains('on'))return;if(e.key==='Escape')end();if(e.key==='ArrowRight')go(i+1);if(e.key==='ArrowLeft')go(i-1);});}
+ function place(){if(!tip||!tip.classList.contains('on'))return;const t=el(steps[i].el);
+  if(t){const r=t.getBoundingClientRect(),p=8;Object.assign(spot.style,{display:'block',left:r.left-p+'px',top:r.top-p+'px',width:r.width+2*p+'px',height:r.height+2*p+'px'});ov.style.display='none';}
+  else{spot.style.display='none';ov.style.display='block';}
+  const sheet=narrow();tip.classList.toggle('sheet',sheet);if(sheet)return;
+  const tw=tip.offsetWidth,th=tip.offsetHeight,vw=innerWidth,vh=innerHeight;
+  if(!t){tip.style.left=(vw-tw)/2+'px';tip.style.top=(vh-th)/2+'px';return;}
+  const r=t.getBoundingClientRect();let top=r.bottom+18;if(top+th>vh-12)top=r.top-th-18;if(top<12)top=Math.max(12,Math.min(vh-th-12,r.top+12));
+  let left=r.left+r.width/2-tw/2;left=Math.max(12,Math.min(vw-tw-12,left));tip.style.left=left+'px';tip.style.top=top+'px';}
+ function go(n){if(n<0)return;if(n>=steps.length)return end();i=n;const s=steps[i];if(s.before)s.before();const last=i===steps.length-1;
+  tip.innerHTML=`<div class="tour-count">${i+1} de ${steps.length}</div><h4>${s.title}</h4><div class="tour-body">${s.body}</div><div class="tour-nav"><button type="button" class="tour-skip"${last?' hidden':''}>Pular</button><span></span><button type="button" class="tour-prev"${i===0?' hidden':''}>Voltar</button><button type="button" class="tour-next">${last?'Começar':'Próximo'}</button></div>`;
+  tip.querySelector('.tour-next').onclick=()=>go(i+1);tip.querySelector('.tour-prev').onclick=()=>go(i-1);tip.querySelector('.tour-skip').onclick=end;
+  tip.classList.add('on');const t=el(s.el);
+  if(t){const r=t.getBoundingClientRect();const off=narrow()?16:Math.max(16,(innerHeight-r.height)/2-60);scrollTo({top:scrollY+r.top-off,behavior:'smooth'});setTimeout(place,420);setTimeout(place,800);}
+  place();tip.querySelector('.tour-next').focus({preventScroll:true});}
+ function end(){if(!tip)return;tip.classList.remove('on');spot.style.display='none';ov.style.display='none';try{localStorage.setItem(key,'1');}catch(e){}}
+ return{start(st,k){steps=st;key=k;build();go(0);},auto(st,k){let seen=null;try{seen=localStorage.getItem(k);}catch(e){}if(!seen)this.start(st,k);}};})();
+function openBlob(blob){const o=document.getElementById('ov');const im=o.querySelector('img');if(im.src.startsWith('blob:'))URL.revokeObjectURL(im.src);im.src=URL.createObjectURL(blob);o.hidden=false;}
+
+function figSteps(){const s=[
+{title:'Bem-vindo às figurinhas',body:'<p>Aqui ficam as 16 figurinhas do pacote Na Sala do QuemDera. Veja como baixar as prontas, completar as que faltam e colocar tudo no WhatsApp.</p>'},
+{el:'.seg',title:'Veja como fica no chat',body:'<p>Alterne entre chat claro e escuro para conferir a figurinha nos dois fundos do WhatsApp.</p>'},
+{el:'#f3 .stage',title:'Figurinha pronta',body:'<p>As que têm o selo “Arte final” já estão prontas para usar.</p>'},
+{el:'#f1',title:'Figurinha em composição',body:'<p>Estas ainda precisam da ilustração do integrante. O texto e o contorno já estão definidos.</p>'},
+{el:'#f1 details',title:'O prompt',body:'<p>Abra “Prompt da ilustração” e copie o texto. Mande para o ilustrador ou cole na ferramenta de imagem, junto com uma foto nítida do integrante.</p>'},
+{el:'#f1 .actions label',title:'Envie a ilustração',body:'<p>Quando a imagem chegar (PNG com fundo transparente, sem texto), envie aqui. A página aplica o texto, o contorno branco e o tamanho certo.</p>'}];
+if(DEV.phone)s.push({el:'#f3 .actions',title:'Salvar no celular',body:SAVE_PHONE+'<p>Repita para cada figurinha que for usar.</p>'});
+else s.push({el:'#zipAll',title:'Baixar o pacote',body:'<p>Gera um ZIP com todas as figurinhas prontas, o ícone da bandeja e a lista de emojis. Para uma só, use “Baixar WebP” no card.</p>'});
+s.push({el:'#trayDl',title:'Ícone do pacote',body:'<p>Baixe também o ícone: ele é a capa do pacote dentro do WhatsApp.</p>'});
+s.push({title:'Colocar no WhatsApp',body:'<ol><li>Instale um app de figurinhas, como Sticker.ly ou Sticker Maker.</li><li>Crie um pacote chamado “Na Sala do QuemDera”, com autor “QuemDera”.</li><li>Adicione as figurinhas salvas e o ícone.</li><li>Toque em “Adicionar ao WhatsApp” e compartilhe o link do pacote no grupo.</li></ol><p>Para ver este tour de novo, toque em “Como usar”, no topo.</p>'});return s;}
 async function init(){
   const grid=$('#grid');S.forEach(st=>grid.appendChild(card(st)));
   $('#styleBlock').value=STYLE;
@@ -314,6 +378,7 @@ async function init(){
   for(const st of S) await paint(st);
   const tc=await trayCanvas();$('#trayCanvas').getContext('2d').drawImage(tc,0,0);
   $('#status').textContent=fontsOk?'Pronto. 5 figurinhas em arte final; 11 aguardando ilustração.':'Atenção: as fontes da marca não carregaram; não baixe os arquivos nesta visualização.';
+  setTimeout(()=>Tour.auto(figSteps(),'qd-tour-figurinhas-v1'),500);
   updateZip();
   $('#trayDl').disabled=false;
   $('#trayDl').onclick=async()=>{const c=await trayCanvas();const b=await toBlob(c,'image/png');await save('icone-bandeja_96.png',b);};
@@ -330,6 +395,7 @@ async function init(){
   if(window.claude&&window.claude.use){try{downloads=await window.claude.use('downloads');}catch(e){downloads=null;}}
 }
 init();
+document.getElementById('tourBtn').onclick=()=>Tour.start(figSteps(),'qd-tour-figurinhas-v1');
 </script>
 </body>
 </html>
