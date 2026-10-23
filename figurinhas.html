@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Figurinhas · Na Sala do QuemDera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{--bg:#F6F6F4;--surface:#FFFFFF;--ink:#16151A;--muted:#5D5A62;--line:#E2E0DC;--accent:#B85F00;--accent-bg:#FFF1DE;--ok:#1F6B3A;--ok-bg:#E6F3EA;
+  color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121115;--surface:#1A191E;--ink:#EDEBE7;--muted:#A3A0A9;--line:#2C2A31;--accent:#FFA53A;--accent-bg:#2B1D0C;--ok:#7FD39B;--ok-bg:#16241B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121115;--surface:#1A191E;--ink:#EDEBE7;--muted:#A3A0A9;--line:#2C2A31;--accent:#FFA53A;--accent-bg:#2B1D0C;--ok:#7FD39B;--ok-bg:#16241B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+h1,h2,h3{font-family:"Bebas Neue","Arial Narrow",Impact,sans-serif;font-weight:400;line-height:.95;margin:0;letter-spacing:.01em}
+h1{font-size:clamp(52px,8vw,96px)}
+h2{font-size:clamp(38px,5vw,60px)}
+p{margin:0 0 1em;max-width:70ch}
+.muted{color:var(--muted)}
+header{padding:clamp(40px,7vw,80px) 0 24px}
+header .lead{font-size:clamp(17px,2vw,20px);max-width:62ch;margin-top:16px}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:22px 0 8px}
+button{font:600 14px/1 Inter,sans-serif;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 14px;border-radius:8px;cursor:pointer}
+button.primary{background:#FC8805;border-color:#FC8805;color:#07080B}
+button:disabled{opacity:.45;cursor:not-allowed}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;border-radius:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.status{font-size:14px;color:var(--muted)}
+section{padding:40px 0;border-top:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;margin-top:22px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.stage{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:#E7DED6;position:relative}
+body.chat-dark .stage{background:#0B141A}
+.stage canvas{width:72%;height:auto}
+.tagline{position:absolute;top:10px;left:10px;font:600 11.5px/1 Inter,sans-serif;padding:5px 8px;border-radius:99px}
+.t-final{background:var(--ok-bg);color:var(--ok)}
+.t-ilus{background:var(--accent-bg);color:var(--accent)}
+.num{position:absolute;top:10px;right:12px;font:400 22px/1 "Bebas Neue",sans-serif;color:rgba(0,0,0,.35)}
+body.chat-dark .num{color:rgba(255,255,255,.35)}
+.body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.body b{font-size:15px}
+.body small{color:var(--muted);font-size:13.5px;line-height:1.45}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px}
+.actions label{font:600 14px/1 Inter,sans-serif;border:1px dashed var(--line);padding:10px 12px;border-radius:8px;cursor:pointer}
+.actions input{position:absolute;width:1px;height:1px;opacity:0}
+details{border-top:1px solid var(--line);padding-top:8px}
+summary{cursor:pointer;font-size:13.5px;font-weight:600}
+textarea{width:100%;min-height:150px;margin-top:8px;font:12.5px/1.45 ui-monospace,Menlo,monospace;border:1px solid var(--line);border-radius:6px;padding:8px;background:var(--bg);color:var(--ink);resize:vertical}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}
+@media (max-width:720px){.cols{grid-template-columns:1fr}}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface);margin-top:16px}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14.5px}
+th,td{text-align:left;padding:10px 14px;border-top:1px solid var(--line);vertical-align:top}
+thead th{border-top:0;color:var(--muted);font-weight:600;font-size:13px}
+ol,ul{margin:0;padding-left:1.2em}
+li{margin-bottom:8px;max-width:72ch}
+.tray{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.tray canvas{width:96px;height:96px;background:#E7DED6;border-radius:12px}
+body.chat-dark .tray canvas{background:#0B141A}
+footer{padding:30px 0 60px;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Figurinhas</h1>
+  <p class="lead">Pacote do WhatsApp do projeto Na Sala do QuemDera: 16 figurinhas, 512 × 512 px, fundo transparente e contorno branco de recorte. As de objeto já estão em arte final. As com os integrantes e com as mãos e corpos estão em composição: a arte vem do ilustrador ou de uma ferramenta de imagem, e é colocada aqui para ganhar o texto, o recorte e o arquivo final.</p>
+  <div class="bar">
+    <span class="seg" role="group" aria-label="Fundo do chat"><button type="button" id="bgLight" aria-pressed="true">Chat claro</button><button type="button" id="bgDark" aria-pressed="false">Chat escuro</button></span>
+    <button type="button" class="primary" id="zipAll" disabled>Baixar pacote pronto (ZIP)</button>
+    <span class="status" id="status">Carregando fontes…</span>
+  </div>
+</div></header>
+
+<section><div class="wrap">
+  <h2>As 16 figurinhas</h2>
+  <p class="muted" style="margin-top:12px">Arte final: baixe direto em WebP. Em composição: copie o prompt, gere a ilustração com fundo transparente e envie o PNG no próprio card; o texto, o contorno e o tamanho são aplicados aqui.</p>
+  <div class="grid" id="grid"></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Ícone da bandeja</h2>
+  <div class="tray" style="margin-top:18px">
+    <canvas id="trayCanvas" width="96" height="96" aria-label="Ícone da bandeja"></canvas>
+    <div><p style="margin-bottom:8px">96 × 96 px, PNG. A casa reduzida em âmbar sobre a noite.</p><button type="button" id="trayDl" disabled>Baixar ícone (PNG)</button></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Como gerar as ilustrações</h2>
+  <div class="cols">
+    <div class="panel">
+      <b>Com ilustrador</b>
+      <p class="muted" style="margin:8px 0 0">Envie o bloco de estilo abaixo, as fotos de referência de cada integrante e a descrição de cada card. Peça PNG com fundo transparente, pelo menos 1024 px, sem texto e sem contorno branco: o texto e o recorte são aplicados nesta página, para ficarem iguais em todo o pacote.</p>
+    </div>
+    <div class="panel">
+      <b>Com ferramenta de imagem</b>
+      <p class="muted" style="margin:8px 0 0">Use o prompt de cada card, anexando uma foto nítida do integrante como referência de semelhança. Gere sem texto (essas ferramentas erram letras). Se a ferramenta não entregar fundo transparente, remova o fundo antes de enviar aqui.</p>
+    </div>
+  </div>
+  <details style="margin-top:18px;border:0" open>
+    <summary>Bloco de estilo, igual para todas as ilustrações</summary>
+    <textarea readonly id="styleBlock"></textarea>
+  </details>
+  <div class="tbl"><table>
+    <thead><tr><th>Integrante</th><th>Marcas de identidade</th><th>Instrumento</th></tr></thead>
+    <tbody>
+      <tr><td><b>Jefim</b></td><td>Chapéu bucket preto, sem a marca bordada; sorriso largo de olhos apertados; brincos e piercing no nariz; pele retinta</td><td>Voz, microfone</td></tr>
+      <tr><td><b>Negueba</b></td><td>Cabeça raspada; óculos redondos de armação escura; sorriso enorme; tatuagens no braço; regata preta; pele retinta</td><td>Tantã</td></tr>
+      <tr><td><b>Lucão</b></td><td>Barba cheia; boné vermelho de aba reta, sem logo; camiseta preta; pele morena clara</td><td>Pandeiro</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Publicação e especificação</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Item</th><th>Especificação</th></tr></thead>
+    <tbody>
+      <tr><td>Figurinha</td><td>512 × 512 px, WebP com fundo transparente, até 100 KB, 16 px livres em volta do contorno, contorno branco de 10 px</td></tr>
+      <tr><td>Ícone da bandeja</td><td>96 × 96 px, PNG, até 50 KB</td></tr>
+      <tr><td>Nome e autor</td><td>Na Sala do QuemDera · QuemDera</td></tr>
+      <tr><td>Publicação</td><td>App de figurinhas (Sticker.ly ou similar): criar o pacote, importar os WebP, o ícone e os emojis de cada figurinha, e gerar o link de compartilhamento</td></tr>
+    </tbody>
+  </table></div>
+  <div class="cols">
+    <div class="panel"><b>Riscos em aberto</b><ul style="margin-top:8px"><li>Autorização de imagem por escrito de Jefim, Negueba e Lucão antes de publicar as caricaturas.</li><li>Semelhança: depende de fotos de referência nítidas, de frente e de três quartos.</li><li>Navegadores sem WebP (Safari) exportam PNG; o app de figurinhas converte, mas confira o limite de 100 KB.</li></ul></div>
+    <div class="panel"><b>Critérios de aceite</b><ul style="margin-top:8px"><li>Todas as 16 em 512 × 512, transparentes, com o mesmo contorno e a mesma margem.</li><li>Texto legível no chat claro e no escuro.</li><li>Os três integrantes reconhecíveis e com o mesmo estilo de traço e luz.</li><li>Nenhum logo de terceiros (bonés, chapéu, tênis) nas ilustrações.</li></ul></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">Na Sala do QuemDera · pacote de figurinhas v1. As imagens enviadas nos cards ficam só no seu navegador e não são salvas na página.</div></footer>
+
+<script>
+const NOITE='#07080B', AMBAR='#FC8805', BRILHO='#FFC46B', APAG='#2A1B0D', MADEIRA='#5A3420', LINHO='#EFE7DA', FUMACA='#3B3835';
+const CASA_VB='357 98 607 207', CASA_D='M448.0 276.0L447.3 276.3L446.7 275.0L445.7 275.7L446.0 277.3L442.3 279.7L441.3 279.7L440.7 279.0L438.7 280.3L439.7 281.3L437.7 282.7L436.7 282.7L435.3 284.0L434.3 284.3L434.0 283.7L433.3 283.7L432.7 284.3L432.7 286.0L435.0 285.0L444.0 279.0L444.7 279.0ZM680.3 245.3L679.7 246.3L679.7 274.3L680.3 276.0L681.3 277.0L683.7 277.3L711.0 276.7L711.7 275.3L711.7 245.7L710.3 244.7L682.3 244.7ZM639.0 245.0L639.0 245.7L638.0 246.3L637.7 248.0L638.0 276.3L640.0 277.0L666.3 277.3L669.3 276.7L670.0 275.3L669.7 245.3L664.3 244.3L648.0 244.3ZM679.7 204.3L679.7 233.7L680.3 234.7L696.0 235.3L710.3 235.0L711.3 234.3L711.3 203.3L706.7 203.0L705.7 203.7L688.0 203.7L687.3 203.0L681.7 203.0L681.0 204.3ZM670.0 204.3L667.3 203.0L663.7 203.0L662.0 203.7L659.7 203.7L658.3 203.0L649.7 203.7L637.7 203.7L638.0 234.3L640.7 235.0L669.3 234.7L670.0 231.3ZM958.0 268.0L952.7 265.3L947.3 261.7L944.0 260.3L934.0 254.0L932.7 253.7L931.7 252.3L929.7 251.7L927.0 249.7L924.7 248.7L914.0 241.7L909.3 239.3L906.0 236.7L899.3 232.7L896.7 231.7L884.3 223.7L875.0 219.0L872.3 217.0L872.0 215.7L871.0 215.7L870.7 215.0L867.7 213.7L865.7 212.0L860.0 209.3L844.0 199.7L838.0 197.0L830.7 192.0L829.0 191.7L825.0 188.3L824.7 117.3L823.0 115.3L765.7 115.3L762.3 119.0L762.7 148.7L762.0 153.7L761.0 154.3L743.0 143.7L736.7 138.7L733.7 137.3L730.0 134.7L727.3 133.7L719.0 127.7L716.7 126.7L715.0 125.0L709.7 122.3L687.3 107.7L680.3 103.7L676.3 103.7L656.7 115.3L655.0 117.7L654.0 117.3L648.7 120.3L648.0 121.7L645.7 122.0L640.0 125.7L638.7 127.7L637.3 127.3L635.7 128.0L626.7 134.0L620.7 137.0L615.3 141.0L612.3 142.3L612.7 143.0L612.0 143.7L610.7 143.3L605.3 146.3L602.3 149.3L591.0 156.0L588.3 156.0L584.3 157.7L580.3 160.7L579.0 161.0L578.7 161.7L579.0 161.3L579.3 162.3L575.7 164.3L574.3 163.7L569.0 167.3L564.0 169.7L560.3 172.7L560.7 174.3L557.0 177.3L555.7 177.7L555.7 176.0L554.7 176.7L553.3 176.3L548.3 179.7L548.0 181.7L546.7 182.3L544.3 182.0L543.3 183.3L542.3 183.3L538.7 185.3L535.7 187.7L534.3 189.7L533.0 189.3L531.0 190.7L530.7 191.7L529.3 191.7L526.7 193.0L523.7 195.3L517.7 198.7L517.0 199.7L515.0 200.0L512.0 202.3L512.0 203.3L511.0 204.3L509.7 203.7L497.7 210.7L495.3 213.3L493.3 214.3L492.0 216.3L488.7 217.7L487.3 217.7L484.7 219.0L482.7 220.7L480.3 221.7L479.0 223.3L476.0 224.3L471.3 227.7L468.3 228.7L462.0 233.0L460.7 233.3L456.3 236.7L454.0 237.7L451.0 240.0L449.7 240.3L447.3 242.3L444.7 243.3L439.0 247.3L436.0 248.7L434.7 250.0L420.7 258.7L420.3 259.3L418.3 260.0L417.3 261.7L413.7 262.7L408.7 266.3L402.7 269.7L398.3 273.0L396.7 273.7L395.0 275.7L389.7 277.7L381.7 283.3L368.7 291.3L367.0 291.7L366.0 290.7L365.3 291.7L363.7 291.3L363.0 292.7L364.7 293.0L363.7 295.0L364.7 295.0L364.7 296.0L365.3 296.0L376.3 290.3L380.0 290.3L381.0 289.3L387.7 285.7L391.3 282.3L394.3 281.7L395.0 282.3L395.0 283.0L391.3 286.0L387.7 287.7L383.3 290.7L383.3 291.3L382.3 291.7L382.7 293.0L380.3 294.7L381.3 295.7L379.7 296.7L377.7 296.3L377.3 298.3L382.3 296.0L386.0 296.0L389.7 293.7L395.0 291.3L396.7 290.0L399.3 290.0L400.3 289.0L410.7 283.3L411.3 284.0L402.3 290.0L401.7 291.7L400.3 291.7L397.0 293.7L395.7 295.0L396.0 296.3L395.3 297.0L397.7 296.7L398.7 296.0L401.3 296.0L404.0 293.3L406.0 292.3L407.3 292.3L418.7 286.0L419.3 286.0L420.7 287.3L420.0 285.3L423.7 283.0L444.0 272.0L446.3 272.3L450.0 270.0L452.0 269.3L455.7 265.0L459.3 263.7L460.7 262.7L463.7 262.3L466.7 259.7L471.3 257.0L471.7 257.7L471.0 258.3L470.3 258.3L466.0 262.3L458.3 267.7L457.3 269.7L455.3 269.3L453.7 270.3L454.3 271.3L452.7 272.0L452.3 271.3L451.7 271.3L447.7 274.3L449.0 274.0L449.3 275.7L452.0 274.3L452.7 276.0L453.3 276.3L454.3 275.7L453.3 273.7L454.7 272.3L459.3 270.0L460.3 271.0L462.3 270.7L463.7 269.3L466.0 268.7L468.7 266.7L470.0 266.3L470.3 265.3L469.3 264.3L475.0 260.0L481.3 256.3L484.0 257.0L494.3 251.7L496.0 250.3L496.3 248.3L499.3 246.0L500.0 246.0L504.7 242.7L506.0 242.3L509.0 240.0L513.0 238.0L518.0 234.3L521.3 233.0L533.7 224.0L538.0 222.7L539.7 221.0L543.0 219.0L544.0 217.3L547.0 215.0L551.0 214.0L554.7 212.0L558.3 209.3L559.3 208.0L562.3 207.0L564.7 205.0L569.0 203.0L576.3 198.0L585.0 193.3L587.7 191.0L590.3 190.0L592.3 188.0L598.3 185.0L600.7 183.0L601.3 183.0L602.0 182.0L606.3 180.0L612.7 175.7L621.0 171.0L625.7 167.0L628.3 166.0L633.3 163.0L637.0 160.0L642.7 157.7L647.0 154.3L649.3 153.7L657.3 148.0L663.0 145.0L677.0 136.0L679.0 136.3L682.0 138.0L689.7 143.7L691.0 144.0L693.3 146.0L695.7 147.0L704.7 153.0L706.0 153.3L714.7 159.7L718.0 161.3L721.7 164.0L723.0 164.3L736.3 173.0L738.7 174.0L745.3 178.7L750.0 181.0L755.0 185.0L759.7 187.0L793.3 207.7L795.0 208.0L806.7 215.7L811.7 218.0L812.0 218.7L811.0 219.3L811.0 220.3L812.3 221.0L813.0 222.0L817.3 225.0L826.3 230.0L828.7 232.0L829.3 232.0L838.3 237.7L839.7 238.0L841.3 239.7L849.3 244.7L851.7 244.7L852.3 243.3L854.7 243.7L859.3 246.0L863.3 249.0L864.3 249.0L869.3 252.7L872.0 254.0L875.0 254.3L876.0 256.3L875.7 258.0L876.7 259.7L879.7 261.0L885.7 265.0L893.0 266.0L893.3 266.3L892.7 267.3L895.0 269.0L901.0 271.0L907.7 275.7L911.0 277.0L915.0 280.0L920.7 283.0L923.0 282.7L919.3 278.7L920.0 278.3L921.0 279.0L924.0 279.3L923.3 278.3L925.0 278.0L927.7 279.7L934.0 282.0L939.7 285.0L941.0 285.0L944.0 286.7L947.0 286.7L944.0 284.3L933.3 278.7L930.0 276.0L923.7 273.0L922.3 271.7L918.7 269.7L915.3 266.7L913.0 265.7L911.3 264.0L911.7 263.3L915.0 264.7L915.3 265.3L917.0 265.3L919.3 267.0L922.3 267.0L923.0 267.7L924.7 267.7L928.3 270.0L934.3 272.3L935.3 272.3L936.7 271.3L941.3 275.0L943.3 275.0L944.0 274.0L945.7 274.7L946.7 274.7L947.0 274.0L948.3 274.3L946.7 272.7L944.7 272.0L931.0 262.7L930.3 262.7L929.3 261.7L929.3 260.3L928.0 259.0L928.3 258.0L935.3 261.3L945.3 268.0L947.0 268.0L947.0 267.0L945.7 266.3L946.3 265.7L948.0 266.7L952.3 268.0L954.0 268.0L956.0 269.0L958.0 269.0ZM889.7 262.7L890.7 262.3L893.7 264.0L894.7 264.0L895.7 264.7L895.7 265.7L894.0 266.0L892.0 265.0ZM425.7 262.7L421.3 266.0L417.3 268.0L414.7 270.3L412.3 271.3L410.7 273.0L402.0 278.3L399.3 280.7L398.0 281.3L396.3 281.3L395.7 280.7L396.7 279.3L401.0 276.3L407.3 273.0L408.3 272.0L411.7 270.7L415.7 267.7L419.0 266.0L420.7 264.3L424.7 262.0ZM845.0 236.0L846.3 236.0L849.7 238.3L851.0 238.7L851.3 239.7L849.3 239.7L845.3 237.0ZM534.3 192.3L532.3 194.0L531.0 196.0L529.3 196.7L522.7 201.7L521.7 203.7L519.3 203.7L513.7 207.7L511.7 208.3L511.0 209.7L509.7 209.7L505.7 211.3L499.7 215.0L499.0 214.3L502.7 211.7L506.7 209.7L514.7 203.7L517.3 202.7L524.3 198.3L525.0 197.3L529.7 195.0L531.3 193.3L533.7 192.0ZM779.7 132.0L807.7 132.3L808.0 177.0L807.3 180.0L805.0 179.3L799.3 176.0L797.3 175.3L796.3 174.3L794.3 173.7L786.7 168.7L781.7 166.3L779.3 164.3Z';
+
+const STYLE=`STYLE (use for every illustration):
+Sticker illustration, bold cel-shaded caricature, big head (about 1.4x) on half body, 4 to 5 flat tones per surface.
+Warm palette: inner outlines in dark brown #2A1B0D (never pure black lines), shadows in warm wood brown #5A3420,
+strong amber rim light coming from the left (#FC8805) with a soft glow, highlights in #FFC46B.
+Clothes in black and off-white. Expressive, exaggerated, friendly face. Clean vector look.
+Transparent background. No text, no letters, no logos, no brand marks. No white sticker border.
+Whole figure inside the frame with some empty space around. Use the attached photo only as likeness reference.`;
+
+const P={
+ jefim:'Jefim: Brazilian man, deep brown skin, black bucket hat with no logo, wide joyful smile with squinted eyes, small earrings and a nose stud, black short-sleeve shirt',
+ negueba:'Negueba: Brazilian man, deep brown skin, shaved head, round dark-frame eyeglasses, huge bright smile, black tank top, tattoos on the right arm',
+ lucao:'Lucão: Brazilian man, light brown skin, full dark beard, red flat-brim cap with no logo, black t-shirt'
+};
+
+function backplate(inner,extraDefs=''){return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 340"><defs><clipPath id="c"><rect width="460" height="340" rx="56"/></clipPath>${extraDefs}</defs><g clip-path="url(#c)"><rect width="460" height="340" fill="${NOITE}"/>${inner}</g></svg>`;}
+const glow=(id,cx,cy,r,op)=>`<radialGradient id="${id}" cx="${cx}" cy="${cy}" r="${r}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${AMBAR}" stop-opacity="${op}"/><stop offset=".55" stop-color="${AMBAR}" stop-opacity="${op*0.2}"/><stop offset="1" stop-color="${AMBAR}" stop-opacity="0"/></radialGradient>`;
+function win(x,y,s,g,lit){let o='';for(let i=0;i<4;i++){const on=lit[i];o+=`<rect x="${x+(i%2)*(s+g)}" y="${y+Math.floor(i/2)*(s+g)}" width="${s}" height="${s}" rx="2" fill="${on?AMBAR:APAG}"/>`;if(on)o+=`<rect x="${x+(i%2)*(s+g)+6}" y="${y+Math.floor(i/2)*(s+g)+6}" width="${s*0.32}" height="${s*0.32}" rx="2" fill="${BRILHO}" opacity=".55"/>`;}return o;}
+
+const ART={
+ 3: backplate(`<rect width="460" height="340" fill="url(#g3)"/>${[0,1,2,3,4,5,6,7].map(i=>{const a=i*Math.PI/4,r1=118,r2=150;return `<line x1="${230+Math.cos(a)*r1}" y1="${170+Math.sin(a)*r1}" x2="${230+Math.cos(a)*r2}" y2="${170+Math.sin(a)*r2}" stroke="${BRILHO}" stroke-width="9" stroke-linecap="round" opacity=".75"/>`}).join('')}${win(162,102,62,14,[1,1,1,1])}`, glow('g3',230,170,200,.65)),
+ 4: backplate(`<rect width="460" height="340" fill="url(#g4)"/><rect y="292" width="460" height="48" fill="#120D0A"/>
+   <rect x="58" y="138" width="226" height="80" rx="26" fill="${MADEIRA}"/><rect x="44" y="196" width="254" height="86" rx="18" fill="#6B3E26"/>
+   <rect x="30" y="170" width="50" height="118" rx="22" fill="${MADEIRA}"/><rect x="262" y="170" width="50" height="118" rx="22" fill="${MADEIRA}"/>
+   <rect x="88" y="196" width="80" height="22" rx="10" fill="#7A4A2E"/><rect x="172" y="196" width="80" height="22" rx="10" fill="#7A4A2E"/>
+   <rect x="40" y="282" width="12" height="16" fill="#120D0A"/><rect x="290" y="282" width="12" height="16" fill="#120D0A"/>
+   <path d="M94 192 v12 a46 15 0 0 0 92 0 v-12z" fill="#8A5A34"/><ellipse cx="140" cy="192" rx="46" ry="15" fill="#8A5A34"/><ellipse cx="140" cy="191" rx="39" ry="11.5" fill="${LINHO}"/>
+   ${[0,1,2,3,4].map(i=>`<rect x="${100+i*17}" y="199" width="11" height="6" rx="2" fill="${BRILHO}"/>`).join('')}
+   <line x1="384" y1="150" x2="384" y2="290" stroke="#2A2420" stroke-width="7"/><ellipse cx="384" cy="292" rx="30" ry="7" fill="#2A2420"/>
+   <path d="M350 92 h68 l18 58 h-104z" fill="${AMBAR}"/><path d="M350 92 h68 l6 18 h-80z" fill="${BRILHO}" opacity=".6"/>`, glow('g4',384,150,220,.6)),
+ 10: backplate(`<rect width="460" height="340" fill="url(#g10)"/>
+   ${[[60,50],[110,92],[390,60],[350,110],[420,150],[40,140]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3.5" fill="${LINHO}" opacity=".8"/>`).join('')}
+   <rect x="128" y="160" width="204" height="180" fill="#17110D"/>
+   <path d="M98 172 L230 70 L362 172" fill="none" stroke="${AMBAR}" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
+   <path d="M300 118 v-38 h26 v58" fill="none" stroke="${AMBAR}" stroke-width="12" stroke-linejoin="round"/>
+   ${win(186,190,40,10,[1,1,1,1])}<rect y="318" width="460" height="22" fill="#0E0A07"/>`, glow('g10',230,230,190,.6)),
+ 13: backplate(`<rect width="460" height="340" fill="url(#g13)"/><rect y="296" width="460" height="44" fill="#120D0A"/>
+   <ellipse cx="270" cy="298" rx="120" ry="10" fill="#000" opacity=".5"/>
+   <rect x="196" y="112" width="152" height="140" rx="40" fill="${MADEIRA}"/>
+   <rect x="176" y="206" width="192" height="76" rx="22" fill="#6B3E26"/><rect x="164" y="180" width="44" height="106" rx="20" fill="${MADEIRA}"/><rect x="336" y="180" width="44" height="106" rx="20" fill="${MADEIRA}"/>
+   <rect x="208" y="206" width="128" height="22" rx="10" fill="#7A4A2E"/><rect x="178" y="282" width="12" height="16" fill="#120D0A"/><rect x="352" y="282" width="12" height="16" fill="#120D0A"/>
+   
+   <line x1="96" y1="138" x2="96" y2="292" stroke="#2A2420" stroke-width="7"/><ellipse cx="96" cy="294" rx="28" ry="7" fill="#2A2420"/>
+   <path d="M62 80 h68 l18 58 h-104z" fill="${AMBAR}"/><path d="M62 80 h68 l6 18 h-80z" fill="${BRILHO}" opacity=".6"/>`, glow('g13',96,140,230,.62)),
+ 16: backplate(`<rect width="460" height="340" fill="url(#g16)"/>
+   <path d="M378 52 a40 40 0 1 0 30 66 a32 32 0 1 1 -30 -66z" fill="${LINHO}"/>
+   ${[[70,60],[120,40],[300,46],[60,140],[400,170]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3" fill="${LINHO}" opacity=".7"/>`).join('')}
+   ${win(158,102,66,14,[1,0,0,0])}`, glow('g16',191,135,150,.4))
+};
+
+const S=[
+ {n:1,t:'CHEGA MAIS',f:'b',kind:'ilus',who:'Jefim',use:'Receber alguém no grupo, chamar para perto',emo:'👋 🤗',p:`${P.jefim}, both arms wide open in a welcoming pose, holding a vocal microphone in one hand, inviting smile looking at the viewer.`},
+ {n:2,t:'BORA PRA RODA?',f:'b',kind:'ilus',who:'Negueba',use:'Convidar para o pagode, para o fim de semana',emo:'🥁 🎉',p:`${P.negueba}, sitting and playing a tantã (Brazilian hand drum held on the lap), one hand raised mid-strike, inviting grin at the viewer.`},
+ {n:3,t:'A LUZ ACENDEU',f:'b',kind:'final',who:'Janela',use:'Avisar que chegou, que está online, que saiu faixa nova',emo:'💡 🏠'},
+ {n:4,t:'TÔ NA SALA',f:'b',kind:'final',who:'Sofá e abajur',use:'"Cheguei", "estou em casa", "estou disponível"',emo:'🛋️ 🏠'},
+ {n:5,t:'MASSA DEMAIS, VÉI',f:'b',kind:'ilus',who:'Lucão',use:'Aprovar, elogiar, curtir algo',emo:'👍 🔥',p:`${P.lucao}, big smile, thumbs up with one hand, holding a pandeiro (Brazilian tambourine) in the other hand.`},
+ {n:6,t:'AUMENTA O SOM',f:'b',kind:'ilus',who:'Jefim',use:'Pedir para tocar, reagir a música boa',emo:'🔊 🎶',p:`${P.jefim}, eyes closed, one hand cupped behind the ear, head tilted, enjoying the music, two small amber music notes floating.`},
+ {n:7,t:'KKKKKK',f:'b',kind:'ilus',who:'Negueba',use:'Rir de algo',emo:'😂 🤣',p:`${P.negueba}, head thrown back laughing hard, eyes shut behind the glasses, one hand on the belly, tears of laughter.`},
+ {n:8,t:'RESPEITA O\nPANDEIRO',f:'b',kind:'ilus',who:'Lucão',use:'Quando alguém manda bem, ou para zoar quem se achou',emo:'😎 👆',p:`${P.lucao}, pointing proudly at a pandeiro held up beside his face, one eyebrow raised, confident smirk.`},
+ {n:9,t:'FECHOU!',f:'b',kind:'ilus',who:'Mãos dos três',use:'Confirmar combinado, aceitar convite',emo:'🤝 ✅',p:`Three hands meeting in a fist bump at the center, coming from left, right and bottom. Skin tones: two deep brown, one light brown. Black sleeves. A small burst of amber light where they touch.`},
+ {n:10,t:'quem dera',f:'f',kind:'final',who:'Casa',use:'Desejo, inveja boa ("quem dera eu estivesse aí")',emo:'🥺 ✨'},
+ {n:11,t:'impossível te esquecer',f:'f',kind:'ilus',who:'Jefim',use:'Declarar saudade ou carinho por alguém',emo:'❤️ 🥹',p:`${P.jefim}, eyes closed singing with emotion, one hand on the chest over the heart, microphone in the other hand, soft amber glow behind him.`},
+ {n:12,t:'FOI A LEI\nDO CORAÇÃO',f:'b',kind:'ilus',who:'Negueba',use:'Justificar uma decisão emocional, com humor',emo:'💘 🤷',p:`${P.negueba}, shrugging with palms up, one palm holding a small glowing amber heart, playful "what can I do" face, raised eyebrows.`},
+ {n:13,t:'SAUDADE BATEU',f:'b',kind:'final',who:'Abajur e poltrona',use:'Sentir falta de alguém ou de um momento',emo:'🫶 🌙'},
+ {n:14,t:'FOI PRO JAPÃO,\nFOI?',f:'b',kind:'ilus',who:'Lucão',use:'Cobrar quem sumiu ou não responde',emo:'✈️ 👀',p:`${P.lucao}, pulling a small suitcase, passport in hand, side-eye glance over the shoulder, suspicious playful look.`},
+ {n:15,t:'BALANÇO\nPOR VOCÊ',f:'b',kind:'ilus',who:'Os três',use:'Comemorar, flertar de leve, mandar energia boa',emo:'💃 🕺',p:`The three members together, small full-body figures dancing side by side with arms up, joyful motion. ${P.jefim}. ${P.negueba}. ${P.lucao}.`},
+ {n:16,t:'BOA NOITE,\nFAMÍLIA',f:'b',kind:'final',who:'Janela',use:'Despedir-se do grupo à noite',emo:'🌙 😴'}
+];
+
+const SZ=512, M=16, R=10, BOX=SZ-2*(M+R);
+const state={};
+let downloads=null, fontsOk=false;
+const $=s=>document.querySelector(s);
+
+function loadImg(src){return new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src;});}
+const svgUrl=svg=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+
+function drawText(ctx,st,top,maxH){
+  const lines=st.t.split('\n'), isF=st.f==='f';
+  let size=isF?92:110;
+  const fam=s=>isF?`italic 600 ${s}px Fraunces, Georgia, serif`:`400 ${s}px "Bebas Neue", Impact, sans-serif`;
+  const lh=isF?1.0:0.9;
+  const fits=s=>{ctx.font=fam(s);return lines.every(l=>ctx.measureText(l).width<=BOX-10) && lines.length*s*lh<=maxH;};
+  while(size>34 && !fits(size)) size-=2;
+  ctx.save();ctx.font=fam(size);ctx.fillStyle=NOITE;ctx.textAlign='center';ctx.textBaseline='middle';
+  const total=lines.length*size*lh, cy=top+maxH/2;
+  ctx.translate(SZ/2,cy);ctx.rotate(-3*Math.PI/180);
+  lines.forEach((l,i)=>ctx.fillText(l,0,-total/2+size*lh*(i+.5)+(isF?-size*0.06:size*0.04)));
+  ctx.restore();
+}
+
+function whiteMask(src,r){
+  const mask=document.createElement('canvas');mask.width=mask.height=SZ;const m=mask.getContext('2d');
+  for(let a=0;a<360;a+=10){const t=a*Math.PI/180;m.drawImage(src,Math.cos(t)*r,Math.sin(t)*r);m.drawImage(src,Math.cos(t)*r*.55,Math.sin(t)*r*.55);}
+  m.drawImage(src,0,0);m.globalCompositeOperation='source-in';m.fillStyle='#FFFFFF';m.fillRect(0,0,SZ,SZ);return mask;
+}
+function dieCut(src){
+  const out=document.createElement('canvas');out.width=out.height=SZ;const o=out.getContext('2d');
+  o.drawImage(whiteMask(src,R),0,0);o.drawImage(src,0,0);return out;
+}
+
+async function compose(st){
+  const c=document.createElement('canvas');c.width=c.height=SZ;const ctx=c.getContext('2d');
+  const artTop=M+R+4, artH=Math.round(BOX*0.70), textTop=artTop+artH-26, textH=BOX-artH+22;
+  let art=null;
+  if(st.kind==='final') art=await loadImg(svgUrl(ART[st.n]));
+  else if(state[st.n]&&state[st.n].img) art=state[st.n].img;
+  if(art){
+    const w=art.naturalWidth||art.width,h=art.naturalHeight||art.height,k=Math.min(BOX/w,artH/h);
+    ctx.drawImage(art,M+R+(BOX-w*k)/2,artTop+(artH-h*k)/2,w*k,h*k);
+  }
+  const tc=document.createElement('canvas');tc.width=tc.height=SZ;drawText(tc.getContext('2d'),st,textTop,textH);
+  ctx.drawImage(whiteMask(tc,15),0,0);ctx.drawImage(tc,0,0);
+  let final=dieCut(c);
+  if(!art){ // sketch placeholder shown on top, outside the die-cut
+    const g=final.getContext('2d');g.save();g.setLineDash([10,8]);g.strokeStyle='rgba(120,110,100,.9)';g.lineWidth=3;
+    g.beginPath();g.roundRect(M+R+10,artTop+2,BOX-20,artH-44,28);g.fillStyle='rgba(239,231,218,.92)';g.fill();g.stroke();
+    g.fillStyle='#5A3420';g.font='600 26px Inter, sans-serif';g.textAlign='center';g.fillText(st.who,SZ/2,artTop+artH/2-30);
+    g.font='400 19px Inter, sans-serif';g.fillStyle='#6F6A63';g.fillText('ilustração a enviar',SZ/2,artTop+artH/2+2);g.restore();
+  }
+  return final;
+}
+
+async function toBlob(canvas,type,max){
+  if(type==='image/png') return new Promise(r=>canvas.toBlob(r,'image/png'));
+  let q=0.92,b=null;
+  while(q>=0.4){b=await new Promise(r=>canvas.toBlob(r,'image/webp',q));if(!b||b.type!=='image/webp')return await new Promise(r=>canvas.toBlob(r,'image/png'));if(b.size<=max)return b;q-=0.08;}
+  return b;
+}
+const slug=st=>String(st.n).padStart(2,'0')+'_'+st.t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+
+async function save(filename,blob){
+  if(!downloads){if(window.claude){$('#status').textContent='Download indisponível nesta visualização.';return;}const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},4000);$('#status').textContent='Arquivo baixado: '+filename;return;}
+  try{await downloads.save({filename,data:blob});$('#status').textContent='Arquivo salvo: '+filename;}
+  catch(e){$('#status').textContent=e&&e.code==='declined'?'Download cancelado.':'Não foi possível baixar ('+(e&&e.code||'erro')+').';}
+}
+
+function card(st){
+  const el=document.createElement('article');el.className='card';el.id='f'+st.n;
+  el.innerHTML=`<div class="stage"><span class="tagline ${st.kind==='final'?'t-final':'t-ilus'}">${st.kind==='final'?'Arte final':'Em composição'}</span><span class="num">${st.n}</span><canvas width="512" height="512" aria-label="Figurinha ${st.n}"></canvas></div>
+  <div class="body"><b>${st.t.replace('\n',' ')}</b><small>${st.use}<br>${st.who} · ${st.emo}</small>
+  <div class="actions"></div>${st.p?`<details><summary>Prompt da ilustração</summary><textarea readonly>${STYLE}\n\nSUBJECT:\n${st.p}</textarea></details>`:''}</div>`;
+  const act=el.querySelector('.actions');
+  const dl=document.createElement('button');dl.type='button';dl.textContent=(st.kind==='final'?'Baixar WebP':'Baixar WebP');dl.disabled=st.kind!=='final';
+  dl.onclick=async()=>{const cv=await compose(st);const b=await toBlob(cv,'image/webp',100*1024);await save(slug(st)+(b.type==='image/webp'?'.webp':'.png'),b);};
+  act.appendChild(dl);
+  if(st.kind!=='final'){
+    const lab=document.createElement('label');lab.innerHTML=`Enviar ilustração (PNG)<input type="file" accept="image/png,image/webp">`;
+    lab.querySelector('input').onchange=async ev=>{const f=ev.target.files[0];if(!f)return;const url=URL.createObjectURL(f);const img=await loadImg(url);state[st.n]={img};dl.disabled=false;await paint(st);updateZip();$('#status').textContent='Ilustração aplicada na figurinha '+st.n+'.';};
+    act.appendChild(lab);
+  }
+  return el;
+}
+async function paint(st){const cv=await compose(st);const t=document.querySelector('#f'+st.n+' canvas').getContext('2d');t.clearRect(0,0,512,512);t.drawImage(cv,0,0);}
+
+function ready(st){return st.kind==='final'||(state[st.n]&&state[st.n].img);}
+function updateZip(){$('#zipAll').disabled=!(window.JSZip);}
+
+async function trayCanvas(){
+  const c=document.createElement('canvas');c.width=c.height=96;const x=c.getContext('2d');
+  x.fillStyle=NOITE;x.beginPath();x.arc(48,48,46,0,Math.PI*2);x.fill();
+  const gr=x.createRadialGradient(48,52,2,48,52,46);gr.addColorStop(0,'rgba(252,136,5,.45)');gr.addColorStop(1,'rgba(252,136,5,0)');x.fillStyle=gr;x.fill();
+  const [vx,vy,vw,vh]=CASA_VB.split(' ').map(Number);
+  const img=await loadImg(svgUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${CASA_VB}"><path fill="${AMBAR}" fill-rule="evenodd" d="${CASA_D}"/></svg>`));
+  const w=74,h=w*vh/vw;x.drawImage(img,48-w/2,50-h/2-4,w,h);return c;
+}
+
+async function init(){
+  const grid=$('#grid');S.forEach(st=>grid.appendChild(card(st)));
+  $('#styleBlock').value=STYLE;
+  try{await Promise.all([document.fonts.load('400 100px "Bebas Neue"'),document.fonts.load('italic 600 100px Fraunces')]);fontsOk=document.fonts.check('400 100px "Bebas Neue"');}catch(e){}
+  for(const st of S) await paint(st);
+  const tc=await trayCanvas();$('#trayCanvas').getContext('2d').drawImage(tc,0,0);
+  $('#status').textContent=fontsOk?'Pronto. 5 figurinhas em arte final; 11 aguardando ilustração.':'Atenção: as fontes da marca não carregaram; não baixe os arquivos nesta visualização.';
+  updateZip();
+  $('#trayDl').disabled=false;
+  $('#trayDl').onclick=async()=>{const c=await trayCanvas();const b=await toBlob(c,'image/png');await save('icone-bandeja_96.png',b);};
+  $('#zipAll').onclick=async()=>{
+    const zip=new JSZip();let n=0;
+    for(const st of S){if(!ready(st))continue;const cv=await compose(st);const b=await toBlob(cv,'image/webp',100*1024);zip.file(slug(st)+(b.type==='image/webp'?'.webp':'.png'),b);n++;}
+    zip.file('icone-bandeja_96.png',await toBlob(await trayCanvas(),'image/png'));
+    zip.file('emojis.txt',S.map(st=>slug(st)+'\t'+st.emo).join('\n'));
+    const blob=await zip.generateAsync({type:'blob'});await save('figurinhas-na-sala-do-quemdera.zip',blob);
+    $('#status').textContent+=` (${n} de 16 figurinhas no pacote)`;
+  };
+  $('#bgLight').onclick=()=>{document.body.classList.remove('chat-dark');$('#bgLight').setAttribute('aria-pressed','true');$('#bgDark').setAttribute('aria-pressed','false');};
+  $('#bgDark').onclick=()=>{document.body.classList.add('chat-dark');$('#bgDark').setAttribute('aria-pressed','true');$('#bgLight').setAttribute('aria-pressed','false');};
+  if(window.claude&&window.claude.use){try{downloads=await window.claude.use('downloads');}catch(e){downloads=null;}}
+}
+init();
+</script>
+</body>
+</html>
